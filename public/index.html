@@ -27,9 +27,15 @@
                                 peer.disconnect();
                             }, 1000);
                         });
+
+                        peer.on('error', function(e) {
+                            console.error(e);
+                            alert('Signaling server returned error');
+                        });
                     }
-                ).fail(function() {
-                    alert('Peer Authentication Failed');
+                ).fail(function(e) {
+                    console.error(e);
+                    alert('Auth server returned error');
                 });
             });
         });
