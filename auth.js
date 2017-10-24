@@ -49,10 +49,9 @@ app.post('/authenticate', (req, res) => {
             authToken: calculateAuthToken(peerId, unixTimestamp)
         };
 
-        console.log('Credential was made successfully.');
-
         res.send(credential);
-    }).catch(() => {
+    }).catch((error) => {
+        console.error(error);
         // Session token check failed
         res.status(401).send('Authentication Failed');
     });
