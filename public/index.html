@@ -17,7 +17,7 @@
 
                         // use the credential to create new Peer() here.
                         var peer = new Peer('TestPeerID', {
-                            key: apikey,
+                            key: $('#apikey').val(),
                             credential: credential
                         });
 
@@ -34,6 +34,7 @@
     </script>
 </head>
 <body>
+<input type="text" id="apikey" placeholder="API Key">
 <input type="button" id="get-btn" value="Get Credential">
 <pre id="result"></pre>
 </body>
