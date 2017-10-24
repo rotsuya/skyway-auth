@@ -28,6 +28,7 @@ app.use(function(req, res, next) {
 });
 
 app.post('/authenticate', (req, res) => {
+    console.log(req);
     const peerId = req.body.peerId;
     const sessionToken = req.body.sessionToken;
 
