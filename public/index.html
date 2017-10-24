@@ -22,7 +22,7 @@
                         });
 
                         peer.on('open', function() {
-                            console.log(peer.id);
+                            $('#result').text($('#result').text() + '\n' + 'peerId: ' + peer.id);
                             setTimeout(function() {
                                 peer.disconnect();
                             }, 1000);
