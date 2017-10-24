@@ -43,7 +43,6 @@ app.post('/authenticate', (req, res) => {
         const unixTimestamp = Math.floor(Date.now() / 1000);
 
         const credential = {
-            peerId: peerId,
             timestamp: unixTimestamp,
             ttl: credentialTTL,
             authToken: calculateAuthToken(peerId, unixTimestamp)
