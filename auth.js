@@ -77,3 +77,5 @@ function calculateAuthToken(peerId, timestamp) {
     // convert the hash to a base64 string
     return CryptoJS.enc.Base64.stringify(hash);
 }
+
+app.use(express.static('public'));
