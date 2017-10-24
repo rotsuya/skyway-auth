@@ -38,6 +38,7 @@ app.post('/authenticate', (req, res) => {
 
     checkSessionToken(peerId, sessionToken).then(() => {
         // Session token check was successful.
+        console.log('Session token check was successful.');
 
         // We need the current unix timestamp. Date.now() returns in milliseconds so divide by 1000 to get seconds.
         const unixTimestamp = Math.floor(Date.now() / 1000);
@@ -61,7 +62,6 @@ const listener = app.listen(process.env.PORT || 8080, () => {
 });
 
 function checkSessionToken(peerId, token) {
-    console.log(peerId, token);
     return new Promise((resolve, reject) => {
         // Implement checking whether the session is valid or not.
         // Resolve if the session token is valid.
