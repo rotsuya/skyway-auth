@@ -16,14 +16,15 @@
                         $('#result').text(JSON.stringify(credential, null, 2));
 
                         // use the credential to create new Peer() here.
-//                var peer = new Peer('TestPeerID', {
-//                  key: apikey,
-//                  credential: credential
-//                });
-//
-//                peer.on('open', function() {
-//                  // ...
-//                });
+                        var peer = new Peer('TestPeerID', {
+                            key: apikey,
+                            credential: credential
+                        });
+
+                        peer.on('open', function() {
+                            console.log(peer.id);
+                            peer.disconnect();
+                        });
                     }
                 ).fail(function() {
                     alert('Peer Authentication Failed');
