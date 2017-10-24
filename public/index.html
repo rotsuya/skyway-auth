@@ -23,7 +23,9 @@
 
                         peer.on('open', function() {
                             console.log(peer.id);
-                            peer.disconnect();
+                            setTimeout(function() {
+                                peer.disconnect();
+                            }, 1000);
                         });
                     }
                 ).fail(function() {
