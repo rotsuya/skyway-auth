@@ -16,7 +16,7 @@
                         $('#result').text(JSON.stringify(credential, null, 2));
 
                         // use the credential to create new Peer() here.
-                        var peer = new Peer({
+                        var peer = new Peer($('#peerId').val(), {
                             key: $('#apikey').val(),
                             credential: credential
                         });
