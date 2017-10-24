@@ -28,7 +28,6 @@ app.use(function(req, res, next) {
 });
 
 app.post('/authenticate', (req, res) => {
-    console.log(req);
     const peerId = req.body.peerId;
     const sessionToken = req.body.sessionToken;
 
@@ -62,6 +61,7 @@ const listener = app.listen(process.env.PORT || 8080, () => {
 });
 
 function checkSessionToken(peerId, token) {
+    console.log(peerId, token);
     return new Promise((resolve, reject) => {
         // Implement checking whether the session is valid or not.
         // Resolve if the session token is valid.
