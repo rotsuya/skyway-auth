@@ -4,7 +4,7 @@
   "description": "A simple server demonstating how to authenticate peers.",
   "main": "auth.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node auth.js"
   },
   "author": "Ryosuke Otsuya",
   "license": "MIT",
