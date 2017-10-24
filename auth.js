@@ -38,7 +38,6 @@ app.post('/authenticate', (req, res) => {
 
     checkSessionToken(peerId, sessionToken).then(() => {
         // Session token check was successful.
-        console.log('Session token check was successful.');
 
         // We need the current unix timestamp. Date.now() returns in milliseconds so divide by 1000 to get seconds.
         const unixTimestamp = Math.floor(Date.now() / 1000);
@@ -49,6 +48,8 @@ app.post('/authenticate', (req, res) => {
             ttl: credentialTTL,
             authToken: calculateAuthToken(peerId, unixTimestamp)
         };
+
+        console.log('Credential was made successfully.');
 
         res.send(credential);
     }).catch(() => {
