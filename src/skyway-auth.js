@@ -19,7 +19,7 @@ class SkywayAuth extends EventEmitter {
                 this.emit('error', err);
             }
         }, false);
-        xhr.open('POST', './authenticate', true);
+        xhr.open('POST', 'https://skyway-auth.herokuapp.com/authenticate', true);
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         if (peerId) {
             xhr.send('peerId=' + peerId);
