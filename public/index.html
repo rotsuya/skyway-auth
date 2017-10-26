@@ -6,6 +6,44 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
     <script src="skyway-auth.js"></script>
+    <script>
+        $('document').ready(function() {
+            $('#get-btn').click(function() {
+                var peerId = $('#peerId').val();
+                if (peerId) {
+                    var skywayAuth = new SkywayAuth(peerId);
+                } else {
+                    var skywayAuth = new SkywayAuth();
+                }
+                skywayAuth.on('credential', function(credential) {
+                    $('#result').text(JSON.stringify(credential, null, 2));
+
+                    peerId = peerId || credential.peerId;
+
+                    var peer = new Peer(peerId, {
+                        key: $('#apikey').val(),
+                        credential: credential
+                    });
+
+                    peer.on('open', function() {
+                        $('#result').text($('#result').text() + '\n' + 'peerId: ' + peer.id);
+                        setTimeout(function() {
+                            peer.disconnect();
+                        }, 1000);
+                    });
+
+                    peer.on('error', function(err) {
+                        console.error(err);
+                        alert('Signaling server returned error');
+                    });
+                });
+                skywayAuth.on('error', function(err) {
+                    console.error(err);
+                    alert('Auth server returned error');
+                });
+            });
+        });
+    </script>
     <style>
         #apikey {
             font-family: monospace;
