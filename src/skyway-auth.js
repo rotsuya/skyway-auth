@@ -21,11 +21,10 @@ class SkywayAuth extends EventEmitter {
         }, false);
         xhr.open('POST', 'https://skyway-auth.herokuapp.com/authenticate', true);
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.withCredentials = true;
         if (peerId) {
             xhr.send('peerId=' + peerId + '&sessionToken=' + window.sessionToken);
         } else {
-            xhr.send();
+            xhr.send('sessionToken=' + window.sessionToken);
         }
     }
 }
