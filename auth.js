@@ -34,10 +34,9 @@ app.get('/skyway-auth.js', (req, res) => {
         });
         sessionTokens.push(sessionToken);
         res.header('Cache-Control', ['private', 'no-store', 'no-cache', 'must-revalidate', 'proxy-revalidate'].join(','));
-        res.header('no-cache', 'Set-Cookie');
-        res.cookie('sessionToken', sessionToken);
-        res.set('Content-Type', 'application/javascript');
-        res.send(data);
+        res.set('Content-Type', 'text/javascript');
+        const body = data.replace('SESSION_TOKEN', sessionToken);
+        res.send(body);
     });
 });
 
@@ -46,7 +45,7 @@ app.post('/authenticate', (req, res) => {
         length:   16,
         readable: true
     });
-    const sessionToken = req.cookies.sessionToken;
+    const sessionToken = req.body.sessionToken;
 
     if (sessionToken === undefined) {
         res.status(400).send('Bad Request');

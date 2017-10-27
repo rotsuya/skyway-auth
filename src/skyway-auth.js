@@ -23,7 +23,7 @@ class SkywayAuth extends EventEmitter {
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.withCredentials = true;
         if (peerId) {
-            xhr.send('peerId=' + peerId);
+            xhr.send('peerId=' + peerId + '&sessionToken=' + window.sessionToken);
         } else {
             xhr.send();
         }

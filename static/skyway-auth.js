@@ -312,6 +312,7 @@ var _skywayAuth2 = _interopRequireDefault(_skywayAuth);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window.SkywayAuth = _skywayAuth2.default;
+window.sessionToken = 'SESSION_TOKEN';
 
 },{"./skyway-auth.js":3}],3:[function(require,module,exports){
 'use strict';
@@ -359,7 +360,7 @@ var SkywayAuth = function (_EventEmitter) {
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.withCredentials = true;
         if (peerId) {
-            xhr.send('peerId=' + peerId);
+            xhr.send('peerId=' + peerId + '&sessionToken=' + window.sessionToken);
         } else {
             xhr.send();
         }
