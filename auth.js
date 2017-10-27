@@ -27,7 +27,7 @@ app.use(function(req, res, next) {
 });
 
 app.get('/skyway-auth.js', (req, res) => {
-    fs.readFile('static/skyway-auth.js', function(err, data){
+    fs.readFile('static/skyway-auth.js', function(err, buffer){
         const sessionToken = randomstring.generate({
             length:   16,
             readable: true
@@ -35,7 +35,7 @@ app.get('/skyway-auth.js', (req, res) => {
         sessionTokens.push(sessionToken);
         res.header('Cache-Control', ['private', 'no-store', 'no-cache', 'must-revalidate', 'proxy-revalidate'].join(','));
         res.set('Content-Type', 'text/javascript');
-        const body = data.replace('SESSION_TOKEN', sessionToken);
+        const body = buffer.toString().replace('SESSION_TOKEN', sessionToken);
         res.send(body);
     });
 });
