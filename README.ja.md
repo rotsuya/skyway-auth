@@ -18,7 +18,7 @@ JavaScriptにAPIキーを書く方式と比べ、不正利用をより強固に�
 
 ## デモ
 
-https://rotsuya.github.io/skyway-auth-recaptcha/
+https://rotsuya.github.io/skyway-auth/
 
 ## 使い方
 
