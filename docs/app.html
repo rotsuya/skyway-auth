@@ -10,23 +10,15 @@
         document.addEventListener('DOMContentLoaded', ready, false);
 
         function ready() {
-            Promise.all([
-                newPeer(),
-                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-            ]).then(values => {
-                const peer = values[0];
-                const stream = values[1];
-                addVideo('local-video', stream, 'local-video', true);
-                const room = peer.joinRoom('sample', { mode: 'mesh', stream });
-                room.on('stream', stream => {
-                    addVideo(stream.peerId, stream, 'remote-video', false);
+            Promise
+                .all([
+                    newPeer(),
+                    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+                ])
+                .then(joinRoom)
+                .catch(error => {
+                    console.error(error);
                 });
-                room.on('removeStream', stream => {
-                    removeVideo(stream.peerId);
-                });
-            }).catch(error => {
-                console.error(error);
-            });
         }
 
         function newPeer() {
@@ -48,6 +40,19 @@
                 peer.on('error', error => {
                     reject(error);
                 });
+            });
+        }
+
+        function joinRoom(values) {
+            const peer = values[0];
+            const stream = values[1];
+            addVideo('local-video', stream, 'local-video', true);
+            const room = peer.joinRoom('sample', { mode: 'mesh', stream });
+            room.on('stream', stream => {
+                addVideo(stream.peerId, stream, 'remote-video', false);
+            });
+            room.on('removeStream', stream => {
+                removeVideo(stream.peerId);
             });
         }
 
