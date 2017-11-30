@@ -18,9 +18,6 @@
                 const stream = values[1];
                 addVideo('local-video', stream, 'local-video', true);
                 const room = peer.joinRoom('sample', { mode: 'mesh', stream });
-                room.on('open', function () {
-                    console.log('joined room');
-                });
                 room.on('stream', stream => {
                     addVideo(stream.peerId, stream, 'remote-video', false);
                 });
