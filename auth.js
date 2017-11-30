@@ -1,95 +1,103 @@
 'use strict';
 
 const express = require('express');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-
-const hmac = require('crypto-js/hmac-sha256');
+const app = express();
+const multer = require('multer');
+const upload = multer();
+const rp = require('request-promise-native');
 const CryptoJS = require('crypto-js');
-
-const fs = require('fs');
 require('dotenv').config();
 const randomstring = require('randomstring');
 
-const secretKey = process.env.SECRET_KEY;
-const credentialTTL = 3600; // 1 hour
-const sessionTokens = [];
+const SKYWAY_SECRET_KEY = process.env.SKYWAY_SECRET_KEY;
+const CREDENTIAL_TTL = 3600; // 1 hour
+const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
+const RECAPTCHA_API_URL = 'https://www.google.com/recaptcha/api/siteverify';
+const ALLOWED_ORIGINS = [
+    'http://localhost:4000',
+    'https://rotsuya.github.io',
+    'https://skyway-lab.github.io'
+];
 
-const app = express();
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-app.use(cookieParser());
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (ALLOWED_ORIGINS.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    }
     next();
 });
 
-app.get('/skyway-auth.js', (req, res) => {
-    fs.readFile('static/skyway-auth.js', function(err, buffer){
-        const sessionToken = randomstring.generate({
-            length:   16,
-            readable: true
-        });
-        sessionTokens.push(sessionToken);
-        res.header('Cache-Control', ['private', 'no-store', 'no-cache', 'must-revalidate', 'proxy-revalidate'].join(','));
-        res.set('Content-Type', 'text/javascript');
-        const body = buffer.toString().replace('SESSION_TOKEN', sessionToken);
-        res.send(body);
-    });
-});
-
-app.post('/authenticate', (req, res) => {
+app.post('/authenticate', upload.fields([]), (req, res) => {
     const peerId = req.body.peerId || randomstring.generate({
         length:   16,
         readable: true
     });
-    const sessionToken = req.body.sessionToken;
 
-    if (sessionToken === undefined) {
+    const recaptchaResponse = req.body['g-recaptcha-response'];
+    const remoteAddress = req.connection.remoteAddress;
+
+    if (!recaptchaResponse) {
         res.status(400).send('Bad Request');
-        return;
     }
 
-    checkSessionToken(res, sessionToken).then(() => {
-        const unixTimestamp = Math.floor(Date.now() / 1000);
+    verifyRecaptcha(recaptchaResponse, remoteAddress)
+        .then(() => {
+            const unixTimestamp = Math.floor(Date.now() / 1000);
 
-        const credential = {
-            peerId: peerId,
-            timestamp: unixTimestamp,
-            ttl: credentialTTL,
-            authToken: calculateAuthToken(peerId, unixTimestamp)
-        };
+            const credential = {
+                peerId: peerId,
+                timestamp: unixTimestamp,
+                ttl: CREDENTIAL_TTL,
+                authToken: calculateAuthToken(peerId, unixTimestamp)
+            };
 
-        res.send(credential);
-    }).catch((error) => {
-        // Session token check failed
-        console.error(error);
-        res.status(401).send('Authentication Failed');
-    });
+            res.json({
+                peerId: peerId,
+                timestamp: unixTimestamp,
+                ttl: CREDENTIAL_TTL,
+                authToken: calculateAuthToken(peerId, unixTimestamp)
+            });
+        }).catch(() => {
+            res.status(401).send('Authentication Failed');
+        });
 });
 
-const listener = app.listen(process.env.PORT || 8080, () => {
-    console.log(`Server listening on port ${listener.address().port}`)
-});
-
-function checkSessionToken(res, sessionToken) {
+function verifyRecaptcha(recaptchaResponse, remoteAddress) {
     return new Promise((resolve, reject) => {
-        if (!sessionTokens.includes(sessionToken)) {
-            reject();
-        }
-        sessionTokens.pop(sessionToken);
-        res.clearCookie('sessionToken');
-        resolve();
+        const options = {
+            uri: RECAPTCHA_API_URL,
+            qs: {
+                secret: RECAPTCHA_SECRET_KEY,
+                response: recaptchaResponse,
+                remoteip: remoteAddress
+            },
+            json: true
+        };
+        rp(options)
+            .then(json => {
+                if (!json.success) {
+                    console.error(json['error-codes']);
+                    reject();
+                }
+                resolve();
+            }).catch(error => {
+                console.error(error);
+                reject();
+            });
     });
 }
 
 function calculateAuthToken(peerId, timestamp) {
     // calculate the auth token hash
-    const hash = CryptoJS.HmacSHA256(`${timestamp}:${credentialTTL}:${peerId}`, secretKey);
+    const hash = CryptoJS.HmacSHA256(`${timestamp}:${CREDENTIAL_TTL}:${peerId}`, SKYWAY_SECRET_KEY);
 
     // convert the hash to a base64 string
     return CryptoJS.enc.Base64.stringify(hash);
 }
+
+const listener = app.listen(process.env.PORT || 8080, () => {
+    console.log(`Server listening on port ${listener.address().port}`)
+});
 
 app.use(express.static('public'));

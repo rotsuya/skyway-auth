@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SkyWay reCAPTCHA auth sample</title>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', ready, false);
+
+        function ready() {
+            const form = document.getElementById('form');
+            form.addEventListener('submit', verifyRecapture, false);
+        }
+
+        function verifyRecapture(event) {
+            event.preventDefault();
+            const url = form.action;
+            fetch(url, {
+                method: 'POST',
+                body: new FormData(form),
+                mode: 'cors'
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    console.error(response.status, response.statusCode);
+                }
+            }).then(credential => {
+                sessionStorage.skywayCredential = JSON.stringify(credential);
+                location.href = 'app.html';
+            }).catch(error => {
+                console.error(error.message);
+            });
+        }
+    </script>
+</head>
+<body>
+<form action="https://skyway-auth.herokuapp.com" method="post" id="form">
+    <div class="g-recaptcha" data-sitekey="6Lc63joUAAAAAOUG-TxKfA-uQGh75zllwSdKlaqh"></div>
+    <button type="submit">Launch App</button>
+</form>
+</body>
+</html>

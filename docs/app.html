@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SkyWay reCAPTCHA auth sample</title>
+    <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', ready, false);
+
+        function ready() {
+            Promise.all([
+                newPeer(),
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+            ]).then(values => {
+                const peer = values[0];
+                const stream = values[1];
+                addVideo('local-video', stream, 'local-video', true);
+                const room = peer.joinRoom('parallel', { mode: 'sfu', stream });
+                room.on('stream', stream => {
+                    addVideo(stream.peerId, stream, 'remote-video', false);
+                });
+                room.on('removeStream', stream => {
+                    removeVideo(stream.peerId);
+                });
+            }).catch(error => {
+                console.error(error);
+            });
+
+        }
+
+        function newPeer() {
+            return new Promise((resolve, reject) => {
+                const credentialString = sessionStorage.skywayCredential;
+                if (!credentialString) {
+                    location.href = './';
+                }
+                const credential = JSON.parse(credentialString);
+                sessionStorage.removeItem('skywayCredential');
+
+                const peer = new Peer(credential.peerId, {
+                    key: '8f63d3de-2311-4b5b-aaf6-4c726ed2b2d0',
+                    credential: credential
+                });
+                peer.on('open', () => {
+                    resolve(peer);
+                });
+                peer.on('error', error => {
+                    reject(error);
+                });
+            });
+        }
+
+        function addVideo(id, stream, className, muted) {
+            const video = document.createElement('video');
+            video.id = id;
+            video.srcObject = stream;
+            video.className = className;
+            video.muted = muted;
+            video.autoplay = true;
+            video.playsinline = true;
+            document.getElementsByTagName('body')[0].appendChild(video);
+        }
+
+        function removeVideo(id) {
+            document.getElementsByTagName('body')[0].removeChild(document.getElementById(id));
+        }
+    </script>
+    <style>
+        video {
+            width: 160px;
+        }
+        .local-video {
+            transform: scale(-1, 1);
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>
