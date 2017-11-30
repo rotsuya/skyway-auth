@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +38,7 @@
 </head>
 <body>
 <form action="https://skyway-auth.herokuapp.com/authenticate" method="post" id="form">
-    <div class="g-recaptcha" data-sitekey="6Lc63joUAAAAAOUG-TxKfA-uQGh75zllwSdKlaqh"></div>
+    <div class="g-recaptcha" data-sitekey="{{ site.recaptcha-site-key }}"></div>
     <button type="submit">Launch App</button>
 </form>
 </body>

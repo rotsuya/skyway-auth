@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,7 +42,7 @@
                 sessionStorage.removeItem('skywayCredential');
 
                 const peer = new Peer(credential.peerId, {
-                    key: '8f63d3de-2311-4b5b-aaf6-4c726ed2b2d0',
+                    key: '{{ site.skyway-api-key }}',
                     credential: credential
                 });
                 peer.on('open', () => {
