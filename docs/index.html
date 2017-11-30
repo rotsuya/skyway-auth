@@ -37,7 +37,7 @@
     </script>
 </head>
 <body>
-<form action="https://skyway-auth.herokuapp.com/authenticate" method="post" id="form">
+<form action="{{ site.auth-url }}" method="post" id="form">
     <div class="g-recaptcha" data-sitekey="{{ site.recaptcha-site-key }}"></div>
     <button type="submit">Launch App</button>
 </form>

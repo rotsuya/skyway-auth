@@ -1,2 +1,12 @@
+# reCAPTCHA
+
 recaptcha-site-key: 6Lc63joUAAAAAOUG-TxKfA-uQGh75zllwSdKlaqh
+
+# SkyWay
+
 skyway-api-key: 8f63d3de-2311-4b5b-aaf6-4c726ed2b2d0
+
+# SkyWay reCAPTCHA auth sample
+
+auth-url: https://skyway-auth.herokuapp.com/authenticate
+# auth-url: http://localhost:8080/authenticate
