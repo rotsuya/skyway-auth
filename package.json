@@ -1,5 +1,5 @@
 {
-  "name": "skyway-auth",
+  "name": "skyway-recaptcha-auth",
   "version": "1.0.0",
   "description": "A simple server demonstating how to authenticate peers.",
   "main": "auth.js",
