@@ -18,7 +18,7 @@ APIキーとHTTPリクエストの `origin` ヘッダで認証する方式と比
 
 ## デモ
 
-https://rotsuya.github.io/skyway-auth/
+https://rotsuya.github.io/skyway-recaptcha-auth/
 
 ## 使い方
 
