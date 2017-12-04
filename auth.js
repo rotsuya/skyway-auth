@@ -52,12 +52,7 @@ app.post('/authenticate', upload.fields([]), (req, res) => {
                 authToken: calculateAuthToken(peerId, unixTimestamp)
             };
 
-            res.json({
-                peerId: peerId,
-                timestamp: unixTimestamp,
-                ttl: CREDENTIAL_TTL,
-                authToken: calculateAuthToken(peerId, unixTimestamp)
-            });
+            res.json(credential);
         }).catch(() => {
             res.status(401).send('Authentication Failed');
         });
