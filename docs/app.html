@@ -18,6 +18,7 @@
                 .then(joinRoom)
                 .catch(error => {
                     console.error(error);
+                    alert(error);
                 });
         }
 
@@ -26,6 +27,7 @@
                 const credentialString = sessionStorage.skywayCredential;
                 if (!credentialString) {
                     location.href = './';
+                    reject('no credential');
                 }
                 const credential = JSON.parse(credentialString);
                 sessionStorage.removeItem('skywayCredential');

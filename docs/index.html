@@ -23,15 +23,16 @@
                 mode: 'cors'
             }).then(response => {
                 if (response.ok) {
-                    return response.json();
+                    return Promise.resolve(response.json());
                 } else {
-                    console.error(response.status, response.statusCode);
+                    return Promise.reject('credential parse error');
                 }
             }).then(credential => {
                 sessionStorage.skywayCredential = JSON.stringify(credential);
                 location.href = 'app.html';
             }).catch(error => {
-                console.error(error.message);
+                console.error(error);
+                alert(error);
             });
         }
     </script>
